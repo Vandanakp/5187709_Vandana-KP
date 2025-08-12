@@ -12,36 +12,60 @@
 char* readline();
 char* ltrim(char*);
 char* rtrim(char*);
+char** split_string(char*);
 
 int parse_int(char*);
-long parse_long(char*);
 
 /*
- * Complete the 'flippingBits' function below.
+ * Complete the 'birthday' function below.
  *
- * The function is expected to return a LONG_INTEGER.
- * The function accepts LONG_INTEGER n as parameter.
+ * The function is expected to return an INTEGER.
+ * The function accepts following parameters:
+ *  1. INTEGER_ARRAY s
+ *  2. INTEGER d
+ *  3. INTEGER m
  */
 
-long flippingBits(long n) {
-    unsigned long result=~((unsigned long)n)&0xFFFFFFFF;
-    return(long)result;
-
+int birthday(int s_count, int* s, int d, int m) {
+    
+int ways=0;
+for(int i=0;i<=s_count-m;i++){
+    int sum=0;
+    for(int j=0;j<m;j++){
+        sum+=s[i+j];
+    }
+    if(sum==d){
+        ways++;
+    }
+  }
+  return ways;
 }
 
 int main()
 {
     FILE* fptr = fopen(getenv("OUTPUT_PATH"), "w");
 
-    int q = parse_int(ltrim(rtrim(readline())));
+    int n = parse_int(ltrim(rtrim(readline())));
 
-    for (int q_itr = 0; q_itr < q; q_itr++) {
-        long n = parse_long(ltrim(rtrim(readline())));
+    char** s_temp = split_string(rtrim(readline()));
 
-        long result = flippingBits(n);
+    int* s = malloc(n * sizeof(int));
 
-        fprintf(fptr, "%ld\n", result);
+    for (int i = 0; i < n; i++) {
+        int s_item = parse_int(*(s_temp + i));
+
+        *(s + i) = s_item;
     }
+
+    char** first_multiple_input = split_string(rtrim(readline()));
+
+    int d = parse_int(*(first_multiple_input + 0));
+
+    int m = parse_int(*(first_multiple_input + 1));
+
+    int result = birthday(n, s, d, m);
+
+    fprintf(fptr, "%d\n", result);
 
     fclose(fptr);
 
@@ -136,20 +160,30 @@ char* rtrim(char* str) {
     return str;
 }
 
+char** split_string(char* str) {
+    char** splits = NULL;
+    char* token = strtok(str, " ");
+
+    int spaces = 0;
+
+    while (token) {
+        splits = realloc(splits, sizeof(char*) * ++spaces);
+
+        if (!splits) {
+            return splits;
+        }
+
+        splits[spaces - 1] = token;
+
+        token = strtok(NULL, " ");
+    }
+
+    return splits;
+}
+
 int parse_int(char* str) {
     char* endptr;
     int value = strtol(str, &endptr, 10);
-
-    if (endptr == str || *endptr != '\0') {
-        exit(EXIT_FAILURE);
-    }
-
-    return value;
-}
-
-long parse_long(char* str) {
-    char* endptr;
-    long value = strtol(str, &endptr, 10);
 
     if (endptr == str || *endptr != '\0') {
         exit(EXIT_FAILURE);
