@@ -23,7 +23,17 @@ long parse_long(char*);
  */
 
 long sumXor(long n) {
+   if (n == 0) return 1;   // special case
+    
+    int zero_bits = 0;
+    while (n > 0) {
+        if ((n & 1L) == 0) {   // count zero bits
+            zero_bits++;
+        }
+        n >>= 1;
+    }
 
+    return 1L << zero_bits;   // 2^zero_bits
 }
 
 int main()
