@@ -12,47 +12,60 @@
 char* readline();
 char* ltrim(char*);
 char* rtrim(char*);
-char** split_string(char*);
 
 int parse_int(char*);
+long parse_long(char*);
 
 /*
- * Complete the 'superDigit' function below.
+ * Complete the 'counterGame' function below.
  *
- * The function is expected to return an INTEGER.
- * The function accepts following parameters:
- *  1. STRING n
- *  2. INTEGER k
+ * The function is expected to return a STRING.
+ * The function accepts LONG_INTEGER n as parameter.
  */
- long digitSum(char* n) {
-    long sum = 0;
-    for (int i = 0; n[i] != '\0'; i++) {
-        sum += n[i] - '0';
+
+/*
+ * To return the string from the function, you should either do static allocation or dynamic allocation
+ *
+ * For example,
+ * char* return_string_using_static_allocation() {
+ *     static char s[] = "static allocation of string";
+ *
+ *     return s;
+ * }
+ *
+ * char* return_string_using_dynamic_allocation() {
+ *     char* s = malloc(100 * sizeof(char));
+ *
+ *     s = "dynamic allocation of string";
+ *
+ *     return s;
+ * }
+ *
+ */
+char* counterGame(long n) {
+   static char louise[] = "Louise";
+   static char richard[] = "Richard";
+    
+    int moves = 0;
+
+    while (n > 1) {
+        if ((n & (n - 1)) == 0) {
+            // n is a power of 2
+            n >>= 1;
+        } else {
+            // reduce by largest power of 2 less than n
+            long p = 1L << ((int)log2(n));
+            n -= p;
+        }
+        moves++;
     }
-    return sum;
+
+    if (moves % 2 == 1) {
+        return louise;  // Louise wins on odd moves
+    } else {
+        return richard; // Richard wins on even moves
+    }
 }
-
-int superDigit(char* n, int k) {
-   if (x < 10) {
-        return (int)x;
-    }
-    long sum = 0;
-    while (x > 0) {
-        sum += x % 10;
-        x /= 10;
-    }
-    return superDigitHelper(sum);
-}
-
-int superDigit(char* n, int k) {
-    // Step 1: sum of digits of n
-    long sum = digitSum(n);
-
-    // Step 2: multiply by k (because n is repeated k times)
-    long initial = sum * k;
-
-    // Step 3: recursively compute super digit
-    return superDigitHelper(initial);
 
 }
 
@@ -60,15 +73,15 @@ int main()
 {
     FILE* fptr = fopen(getenv("OUTPUT_PATH"), "w");
 
-    char** first_multiple_input = split_string(rtrim(readline()));
+    int t = parse_int(ltrim(rtrim(readline())));
 
-    char* n = *(first_multiple_input + 0);
+    for (int t_itr = 0; t_itr < t; t_itr++) {
+        long n = parse_long(ltrim(rtrim(readline())));
 
-    int k = parse_int(*(first_multiple_input + 1));
+        char* result = counterGame(n);
 
-    int result = superDigit(n, k);
-
-    fprintf(fptr, "%d\n", result);
+        fprintf(fptr, "%s\n", result);
+    }
 
     fclose(fptr);
 
@@ -163,30 +176,20 @@ char* rtrim(char* str) {
     return str;
 }
 
-char** split_string(char* str) {
-    char** splits = NULL;
-    char* token = strtok(str, " ");
-
-    int spaces = 0;
-
-    while (token) {
-        splits = realloc(splits, sizeof(char*) * ++spaces);
-
-        if (!splits) {
-            return splits;
-        }
-
-        splits[spaces - 1] = token;
-
-        token = strtok(NULL, " ");
-    }
-
-    return splits;
-}
-
 int parse_int(char* str) {
     char* endptr;
     int value = strtol(str, &endptr, 10);
+
+    if (endptr == str || *endptr != '\0') {
+        exit(EXIT_FAILURE);
+    }
+
+    return value;
+}
+
+long parse_long(char* str) {
+    char* endptr;
+    long value = strtol(str, &endptr, 10);
 
     if (endptr == str || *endptr != '\0') {
         exit(EXIT_FAILURE);

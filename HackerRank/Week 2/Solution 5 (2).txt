@@ -12,63 +12,72 @@
 char* readline();
 char* ltrim(char*);
 char* rtrim(char*);
-char** split_string(char*);
 
 int parse_int(char*);
 
 /*
- * Complete the 'superDigit' function below.
+ * Complete the 'caesarCipher' function below.
  *
- * The function is expected to return an INTEGER.
+ * The function is expected to return a STRING.
  * The function accepts following parameters:
- *  1. STRING n
+ *  1. STRING s
  *  2. INTEGER k
  */
- long digitSum(char* n) {
-    long sum = 0;
-    for (int i = 0; n[i] != '\0'; i++) {
-        sum += n[i] - '0';
+
+/*
+ * To return the string from the function, you should either do static allocation or dynamic allocation
+ *
+ * For example,
+ * char* return_string_using_static_allocation() {
+ *     static char s[] = "static allocation of string";
+ *
+ *     return s;
+ * }
+ *
+ * char* return_string_using_dynamic_allocation() {
+ *     char* s = malloc(100 * sizeof(char));
+ *
+ *     s = "dynamic allocation of string";
+ *
+ *     return s;
+ * }
+ *
+ */
+char* caesarCipher(char* s, int k) {
+    int n=strlen(s);
+    char*result=(char*)malloc((n+1)*sizeof(char));
+    if(!result)exit(EXIT_FAILURE);
+    
+    k=k%26;
+    for(int i=0;i<n;i++){
+        char c=s[i];
+        if(isalpha(c)){
+            if(isupper(c)){
+                result[i]=((c-'A'+k)%26)+'A';    
+            }else{
+                result[i]=((c-'a'+k)%26)+'a';
+            }
+        }else{
+            result[i]=c;
+        }
     }
-    return sum;
-}
-
-int superDigit(char* n, int k) {
-   if (x < 10) {
-        return (int)x;
-    }
-    long sum = 0;
-    while (x > 0) {
-        sum += x % 10;
-        x /= 10;
-    }
-    return superDigitHelper(sum);
-}
-
-int superDigit(char* n, int k) {
-    // Step 1: sum of digits of n
-    long sum = digitSum(n);
-
-    // Step 2: multiply by k (because n is repeated k times)
-    long initial = sum * k;
-
-    // Step 3: recursively compute super digit
-    return superDigitHelper(initial);
-
+    result[n]='\0';
+    return result;
 }
 
 int main()
 {
     FILE* fptr = fopen(getenv("OUTPUT_PATH"), "w");
 
-    char** first_multiple_input = split_string(rtrim(readline()));
+    int n = parse_int(ltrim(rtrim(readline())));
 
-    char* n = *(first_multiple_input + 0);
+    char* s = readline();
 
-    int k = parse_int(*(first_multiple_input + 1));
+    int k = parse_int(ltrim(rtrim(readline())));
 
-    int result = superDigit(n, k);
+    char* result = caesarCipher(s, k);
 
-    fprintf(fptr, "%d\n", result);
+    fprintf(fptr, "%s\n", result);
 
     fclose(fptr);
 
@@ -161,27 +170,6 @@ char* rtrim(char* str) {
     *(end + 1) = '\0';
 
     return str;
-}
-
-char** split_string(char* str) {
-    char** splits = NULL;
-    char* token = strtok(str, " ");
-
-    int spaces = 0;
-
-    while (token) {
-        splits = realloc(splits, sizeof(char*) * ++spaces);
-
-        if (!splits) {
-            return splits;
-        }
-
-        splits[spaces - 1] = token;
-
-        token = strtok(NULL, " ");
-    }
-
-    return splits;
 }
 
 int parse_int(char* str) {

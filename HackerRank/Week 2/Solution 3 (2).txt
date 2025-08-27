@@ -12,47 +12,22 @@
 char* readline();
 char* ltrim(char*);
 char* rtrim(char*);
-char** split_string(char*);
 
 int parse_int(char*);
 
 /*
- * Complete the 'superDigit' function below.
+ * Complete the 'pageCount' function below.
  *
  * The function is expected to return an INTEGER.
  * The function accepts following parameters:
- *  1. STRING n
- *  2. INTEGER k
+ *  1. INTEGER n
+ *  2. INTEGER p
  */
- long digitSum(char* n) {
-    long sum = 0;
-    for (int i = 0; n[i] != '\0'; i++) {
-        sum += n[i] - '0';
-    }
-    return sum;
-}
 
-int superDigit(char* n, int k) {
-   if (x < 10) {
-        return (int)x;
-    }
-    long sum = 0;
-    while (x > 0) {
-        sum += x % 10;
-        x /= 10;
-    }
-    return superDigitHelper(sum);
-}
-
-int superDigit(char* n, int k) {
-    // Step 1: sum of digits of n
-    long sum = digitSum(n);
-
-    // Step 2: multiply by k (because n is repeated k times)
-    long initial = sum * k;
-
-    // Step 3: recursively compute super digit
-    return superDigitHelper(initial);
+int pageCount(int n, int p) {
+    int fromFront=p/2;
+    int fromBack=(n/2)-(p/2);
+    return(fromFront<fromBack)?fromFront:fromBack;
 
 }
 
@@ -60,13 +35,11 @@ int main()
 {
     FILE* fptr = fopen(getenv("OUTPUT_PATH"), "w");
 
-    char** first_multiple_input = split_string(rtrim(readline()));
+    int n = parse_int(ltrim(rtrim(readline())));
 
-    char* n = *(first_multiple_input + 0);
+    int p = parse_int(ltrim(rtrim(readline())));
 
-    int k = parse_int(*(first_multiple_input + 1));
-
-    int result = superDigit(n, k);
+    int result = pageCount(n, p);
 
     fprintf(fptr, "%d\n", result);
 
@@ -161,27 +134,6 @@ char* rtrim(char* str) {
     *(end + 1) = '\0';
 
     return str;
-}
-
-char** split_string(char* str) {
-    char** splits = NULL;
-    char* token = strtok(str, " ");
-
-    int spaces = 0;
-
-    while (token) {
-        splits = realloc(splits, sizeof(char*) * ++spaces);
-
-        if (!splits) {
-            return splits;
-        }
-
-        splits[spaces - 1] = token;
-
-        token = strtok(NULL, " ");
-    }
-
-    return splits;
 }
 
 int parse_int(char* str) {

@@ -17,58 +17,41 @@ char** split_string(char*);
 int parse_int(char*);
 
 /*
- * Complete the 'superDigit' function below.
+ * Complete the 'towerBreakers' function below.
  *
  * The function is expected to return an INTEGER.
  * The function accepts following parameters:
- *  1. STRING n
- *  2. INTEGER k
+ *  1. INTEGER n
+ *  2. INTEGER m
  */
- long digitSum(char* n) {
-    long sum = 0;
-    for (int i = 0; n[i] != '\0'; i++) {
-        sum += n[i] - '0';
+
+int towerBreakers(int n, int m) {
+    if(m==1){
+        return 2;
     }
-    return sum;
-}
-
-int superDigit(char* n, int k) {
-   if (x < 10) {
-        return (int)x;
+    if(n%2==0){
+        return 2;
     }
-    long sum = 0;
-    while (x > 0) {
-        sum += x % 10;
-        x /= 10;
-    }
-    return superDigitHelper(sum);
-}
-
-int superDigit(char* n, int k) {
-    // Step 1: sum of digits of n
-    long sum = digitSum(n);
-
-    // Step 2: multiply by k (because n is repeated k times)
-    long initial = sum * k;
-
-    // Step 3: recursively compute super digit
-    return superDigitHelper(initial);
-
+    return 1;
 }
 
 int main()
 {
     FILE* fptr = fopen(getenv("OUTPUT_PATH"), "w");
 
-    char** first_multiple_input = split_string(rtrim(readline()));
+    int t = parse_int(ltrim(rtrim(readline())));
 
-    char* n = *(first_multiple_input + 0);
+    for (int t_itr = 0; t_itr < t; t_itr++) {
+        char** first_multiple_input = split_string(rtrim(readline()));
 
-    int k = parse_int(*(first_multiple_input + 1));
+        int n = parse_int(*(first_multiple_input + 0));
 
-    int result = superDigit(n, k);
+        int m = parse_int(*(first_multiple_input + 1));
 
-    fprintf(fptr, "%d\n", result);
+        int result = towerBreakers(n, m);
+
+        fprintf(fptr, "%d\n", result);
+    }
 
     fclose(fptr);
 
